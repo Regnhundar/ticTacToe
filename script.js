@@ -17,14 +17,14 @@ function initGlobalObject() {
 
     //Datastruktur för vilka platser som är lediga respektive har brickor
     //Genom at fylla i här med antingen X eler O kan ni testa era rättningsfunktioner 
-    oGameData.gameField = ['', '', '', '', '', '', '', '', ''];
-    
+    oGameData.gameField = ['', '', '', '', '', '', '', ''];
+
     /* Testdata för att testa rättningslösning */
-    //oGameData.gameField = ['X', 'X', 'X', '', '', '', '', '', ''];
-    //oGameData.gameField = ['X', '', '', 'X', '', '', 'X', '', ''];
-    //oGameData.gameField = ['X', '', '', '', 'X', '', '', '', 'X'];
-    //oGameData.gameField = ['', '', 'X', '', 'X', '', 'X', '', ''];
-    //oGameData.gameField = ['X', 'O', 'X', '0', 'X', 'O', 'O', 'X', 'O'];
+    // oGameData.gameField = ['X', 'X', 'X', '', '', '', '', '', ''];
+    // oGameData.gameField = ['O', 'O', 'O', '', '', '', '', ''];
+    // oGameData.gameField = ['X', '', '', '', 'X', '', '', '', 'X'];
+    // oGameData.gameField = ['', '', 'X', '', 'X', '', 'X', '', ''];
+    // oGameData.gameField = ['X', 'O', 'X', '0', 'X', 'O', 'O', 'X', 'O'];
 
     //Indikerar tecknet som skall användas för spelare ett.
     oGameData.playerOne = "X";
@@ -68,17 +68,18 @@ function initGlobalObject() {
  * returnerar 3 om det är oavgjort.
  * Funktionen tar inte emot några värden.
  */
-function checkForGameOver() {   
+
+function checkForGameOver() {
     //Kontrollerar om "X" vunnit genom att köra rättningsfunktionerna, om så är fallet returneras 1
-    if (checkWinner('X')){
-       return 1;
+    if (checkWinner('X')) {
+        return 1;
     }
     //Kontrollerar om "O" vunnit genom att köra rättningsfunktionerna, om så är fallet returneras 2
-    if (checkWinner('O')){
+    if (checkWinner('O')) {
         return 2;
     }
     //Kontrollerar om spelet är oavgjort, returnerar isåfall 3
-    if(checkForDraw()) {
+    if (checkForDraw()) {
         return 3;
     }
     //Annars returneras 0, och spelet fortlöper
@@ -93,18 +94,66 @@ function checkForGameOver() {
 //I varje loop kontrollerar ni om alla platser i oGameData.GameField 
 //som motsvarar nuvarande combo innehåller playerIn. Om sant, ändra värdet på flaggan.
 //Returnera flaggan isWinner
+
 function checkWinner(playerIn) {
 
-}
+    // Winning combos är en array med arrayer som innehåller index positioner av brädet. [0,1,2] är hela första raden osv.
+
+    let winningCombos = [ 
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
+     ];
+
+    let isWinner = false; // en så kallad flagga. 
+
+     for (let i = 0; i < winningCombos.length; i++) {
+        let combo = winningCombos[i];
+        let a = oGameData.gameField[combo[0]];
+        let b = oGameData.gameField[combo[1]];
+        let c = oGameData.gameField[combo[2]];
+
+        if (a === playerIn && b === playerIn && c === playerIn) {
+            isWinner = true;
+            break;
+        }
+        }
+        return isWinner;
+    }
+
+
 
 //Kontrollera om alla platser i oGameData.GameField är fyllda. Om sant returnera true, annars false.
 function checkForDraw() {
-
+    let isDraw = ``;
+    if (oGameData.gameField.includes('')) {
+        isDraw = false;
+    }
+    else {
+        isDraw = true;
+    }
+    return isDraw;
 }
 
 //Funktion som förbereder spelet inför start
-function prepGame() {
 
+// Här skall ni lägga till klassen "d-none" på elementet i DOM-en med id:t "gameArea", samt lägga en lyssnare 
+// på "Starta spelet!"-knappen som lyssnar efter ett klick. När den klickas skall ni anropa funktionen "initiateGame()".
+prepGame()
+function prepGame() {
+const boardRef = document.querySelector(`#gameArea`);
+boardRef.classList.add(`d-none`);
+
+const startBtnRef = document.querySelector(`#newGame`);
+
+startBtnRef.addEventListener(`click`,() => {
+    initiateGame();
+});
 }
 
 function validateForm() {
@@ -113,9 +162,10 @@ function validateForm() {
 
 function initiateGame() {
 
+
 }
 
-function startGame () {
+function startGame() {
 
 }
 

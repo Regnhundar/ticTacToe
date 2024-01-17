@@ -76,17 +76,17 @@
         console.log(oGameData.gameField);
         console.log(checkForGameOver());
 
-        if(checkForGameOver() === 1) {
+        if (checkForGameOver() === 1) {
             console.log("Spelare X har vunnit!");
         }
-        if(checkForGameOver() === 2 ) {
+        else if (checkForGameOver() === 2 ) {
             console.log("Spelare O har vunnit!");
         }
-        if(checkForGameOver() === 3) {
+        else if (checkForGameOver() === 3) {
             console.log("Spelet slutade oavgjort");
         }
         else{
-            console.log("Speler fortsätter");
+            console.log("Spelet fortsätter");
         }
     </script>
 </body>
