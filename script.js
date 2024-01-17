@@ -159,10 +159,24 @@ startBtnRef.addEventListener(`click`,() => {
 function validateForm() {
 
 }
-
+/* Göm formuläret genom att lägga till klassen "d-none".
+Visa spelplanen genom att ta bort klassen "d-none" på elementet med id:t "gameArea".
+Ta bort textInnehållet i elementet med id:t "errorMsg".
+Spara information om båda spelarna i objektet "oGameData" (dvs. användarnamn och färgval för respektive spelare).
+Töm spelplanen genom att läsa in alla td-element, loopa igenom dem, och ändra dess text till en tom sträng (inga mellanslag).
+Deklarera de lokala variablerna "playerChar" och "playerName".
+Bestäm vilken spelare som skall börja genom att slumpa fram ett tal mellan 0 och 1.
+Om talet är mindre än 0.5 så tilldelar ni:
+playeChar = oGameData.playerOne;
+playerName = oGameData.nickNamePlayerOne;
+oGameData.currentPlayer = oGameData.playerOne;
+Om talet är större än, eller lika med, 0.5 gör ni samma sak som ovan, fast med spelare 2.
+Ändra texten i h1-elementet som ligger i div-elementet med klassen "jumbotron" till "Aktuell spelare är XXX", 
+där ni ersätter XXX med namnet på den aktuella spelaren.
+Lägg till en klicklyssnare på tabellen som innehåller spelplanen. Vid klick skall funktionen "executeMove()" anropas.*/
 function initiateGame() {
-
-
+    
+console.log(`Du är kung. Nu tar du semester.`)
 }
 
 function startGame() {
