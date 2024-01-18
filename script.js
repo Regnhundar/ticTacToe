@@ -159,26 +159,78 @@ startBtnRef.addEventListener(`click`,() => {
 function validateForm() {
 
 }
-/* Göm formuläret genom att lägga till klassen "d-none".
-Visa spelplanen genom att ta bort klassen "d-none" på elementet med id:t "gameArea".
-Ta bort textInnehållet i elementet med id:t "errorMsg".
-Spara information om båda spelarna i objektet "oGameData" (dvs. användarnamn och färgval för respektive spelare).
-Töm spelplanen genom att läsa in alla td-element, loopa igenom dem, och ändra dess text till en tom sträng (inga mellanslag).
-Deklarera de lokala variablerna "playerChar" och "playerName".
-Bestäm vilken spelare som skall börja genom att slumpa fram ett tal mellan 0 och 1.
-Om talet är mindre än 0.5 så tilldelar ni:
-playeChar = oGameData.playerOne;
-playerName = oGameData.nickNamePlayerOne;
-oGameData.currentPlayer = oGameData.playerOne;
-Om talet är större än, eller lika med, 0.5 gör ni samma sak som ovan, fast med spelare 2.
-Ändra texten i h1-elementet som ligger i div-elementet med klassen "jumbotron" till "Aktuell spelare är XXX", 
-där ni ersätter XXX med namnet på den aktuella spelaren.
-Lägg till en klicklyssnare på tabellen som innehåller spelplanen. Vid klick skall funktionen "executeMove()" anropas.*/
-function initiateGame() {
-    
-console.log(`Du är kung. Nu tar du semester.`)
-}
 
+function initiateGame() {
+
+    // Göm formuläret genom att lägga till klassen "d-none".
+    const playerFormRef = document.querySelector(`#theForm`);
+    playerFormRef.classList.add(`d-none`);
+
+    //Visa spelplanen genom att ta bort klassen "d-none" på elementet med id:t "gameArea".
+    const boardRef = document.querySelector(`#gameArea`)
+    boardRef.classList.remove(`d-none`)
+
+    // Ta bort textInnehållet i elementet med id:t "errorMsg".
+    const errorMsgRef = document.querySelector(`#errorMsg`);
+    errorMsgRef.textContent = ``;
+
+    // Spara information om båda spelarna i objektet "oGameData" (dvs. användarnamn och färgval för respektive spelare).
+    oGameData.nickNamePlayerOne = document.querySelector(`#nick1`).value;
+    oGameData.nickNamePlayerTwo = document.querySelector(`#nick2`).value;
+    oGameData.colorPlayerOne = document.querySelector(`#color1`).value;
+    oGameData.colorPlayerTwo = document.querySelector(`#color2`).value;
+
+    console.log(oGameData);
+
+    // Töm spelplanen genom att läsa in alla td-element, loopa igenom dem, och ändra dess text till en tom sträng (inga mellanslag).
+
+    const tdRef = Array.from(document.querySelectorAll(`td`)); // Om man inte gör en "Array.from" så kan vi inte använda array metoder då querySelectorAll sparar allt i en node. 
+    for (let i = 0; i < tdRef.length; i++) {
+        tdRef[i] = "";
+    }
+
+    console.log(tdRef);
+
+    // Deklarera de lokala variablerna "playerChar" och "playerName".
+    // Bestäm vilken spelare som skall börja genom att slumpa fram ett tal mellan 0 och 1.
+    // Om talet är mindre än 0.5 så tilldelar ni:
+    // playeChar = oGameData.playerOne;
+    // playerName = oGameData.nickNamePlayerOne;
+    // oGameData.currentPlayer = oGameData.playerOne;
+    // Om talet är större än, eller lika med, 0.5 gör ni samma sak som ovan, fast med spelare 2.
+
+    let playerChar = ``;
+    let playerName = ``;
+    let randomNumber = Math.random();
+
+    if (randomNumber < 0.5) {
+        playerChar = oGameData.playerOne;
+        playerName = oGameData.nickNamePlayerOne
+    }
+    else {
+        playerChar =oGameData.playerTwo;
+        playerName = oGameData.nickNamePlayerTwo
+    }
+
+    // Ändra texten i h1-elementet som ligger i div-elementet med klassen "jumbotron" till "Aktuell spelare är XXX", 
+    // där ni ersätter XXX med namnet på den aktuella spelaren.
+
+    let h1Ref = document.querySelector(`.jumbotron h1`);
+    h1Ref = h1Ref.textContent= `Aktuell spelare är: ${playerName}`;
+
+    // Lägg till en klicklyssnare på tabellen som innehåller spelplanen. Vid klick skall funktionen "executeMove()" anropas.
+
+    let tableRef = Array.from(document.querySelectorAll(`td`)); // Samlar alla td element i en array.
+
+    for (let i = 0; i < tableRef.length; i++) { // loopar igenom tableRef och lägger till en eventlyssnare på alla element i arrayen.
+    tableRef[i].addEventListener(`click`, () => { executeMove(tableRef[i]) }) // för att veta vilken av td elementen vi clickade på skickar vi med tableRef[i] till executeMove()
+}
+    console.log(`Jag är slutet av initiateGame().`);
+}
+function executeMove (clickedCell) {
+
+    console.log(`Jag är slutet av executeMove().`);
+}
 function startGame() {
 
 }
