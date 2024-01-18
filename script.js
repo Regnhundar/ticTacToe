@@ -17,7 +17,7 @@ function initGlobalObject() {
 
     //Datastruktur för vilka platser som är lediga respektive har brickor
     //Genom at fylla i här med antingen X eler O kan ni testa era rättningsfunktioner 
-    oGameData.gameField = ['', '', '', '', '', '', '', ''];
+    oGameData.gameField = ['', '', '', '', '', '', '', '', ''];
 
     /* Testdata för att testa rättningslösning */
     // oGameData.gameField = ['X', 'X', 'X', '', '', '', '', '', ''];
@@ -180,16 +180,12 @@ function initiateGame() {
     oGameData.colorPlayerOne = document.querySelector(`#color1`).value;
     oGameData.colorPlayerTwo = document.querySelector(`#color2`).value;
 
-    console.log(oGameData);
-
     // Töm spelplanen genom att läsa in alla td-element, loopa igenom dem, och ändra dess text till en tom sträng (inga mellanslag).
 
     const tdRef = Array.from(document.querySelectorAll(`td`)); // Om man inte gör en "Array.from" så kan vi inte använda array metoder då querySelectorAll sparar allt i en node. 
     for (let i = 0; i < tdRef.length; i++) {
         tdRef[i] = "";
     }
-
-    console.log(tdRef);
 
     // Deklarera de lokala variablerna "playerChar" och "playerName".
     // Bestäm vilken spelare som skall börja genom att slumpa fram ett tal mellan 0 och 1.
@@ -220,24 +216,55 @@ function initiateGame() {
 
     // Lägg till en klicklyssnare på tabellen som innehåller spelplanen. Vid klick skall funktionen "executeMove()" anropas.
 
-    let tableRef = Array.from(document.querySelectorAll(`td`)); // Samlar alla td element i en array.
+    let tableRef = Array.from(document.querySelectorAll(`.ml-auto td`)); // Samlar alla td element som ligger i .ml-auto i en array.
 
     for (let i = 0; i < tableRef.length; i++) { // loopar igenom tableRef och lägger till en eventlyssnare på alla element i arrayen.
-    tableRef[i].addEventListener(`click`, () => { executeMove(tableRef[i]) }) // för att veta vilken av td elementen vi clickade på skickar vi med tableRef[i] till executeMove()
+    tableRef[i].addEventListener(`click`, function () { 
+        executeMove(tableRef[i]) }); // för att veta vilken av td elementen vi clickade på skickar vi med tableRef[i] till executeMove()
 }
     console.log(`Jag är slutet av initiateGame().`);
 }
 
-function executeMove (clickedCell) {
+function executeMove (clickedCell) { // Vi tar emot tableRef[i] och sparar den i parametern clickedCell.
 
-    console.log(`Jag är slutet av executeMove().`);
+    let dataIdRef = clickedCell.getAttribute(`data-id`); // hämtar värdet på data-id. Då värdet är en siffra kan vi använda det för att ange index på vårt spelfält.
+
+    if (clickedCell.textContent === " ") { // Kollar så att platsen är tom genom att kolla att det inte är skrivet något mellan taggarna i vår html.
+             
+        oGameData.gameField[dataIdRef] = oGameData.currentPlayer; // Värdet av data-id är en siffra och vi hämtar den siffran för att ange plats på vårt spelfält. Vi sätter platsen till currentplayer (X eller O)
+        clickedCell.textContent = oGameData.currentPlayer // Fyller i antingen X eller O inom elementets taggar i html dokumentet.
+        console.log(oGameData.gameField);
+        if (checkForGameOver() === 0) { // Om funktionen checkForGameOver returnerar 0 så betyder det att spelet inte är avgjort och vi byter spelare.
+            console.log(`The show goes on...`)
+            changePlayer();
+        }
+        else if (checkForGameOver() === 1){ // Om funktionen returnerar 1 så betyder det att spelare 1 vann och vi skickar den informationen till funktionen gameOver
+            console.log(`X vann.`)
+            gameOver(1);
+        }
+        else if (checkForGameOver() === 2){
+            console.log(`O vann.`);
+            gameOver(2);
+        }
+        else {
+            console.log(`Oavgjort.`);
+            gameOver(3);
+        }
+    }
+    else  {
+        console.log(`Är inte tom`); // Bara en kontroll för att se om något händer ifall man klickar på en redan upptagen plats.
+    }
 }
 function startGame() {
-
 }
 
-function changePlayer() {
+/* Kontrollera vem som är nuvarande spelare, och utifrån det sätt bakgrundsfärgen på den klickade tabellcellen till aktuell spelares färg. 
+Sätt även cellens textinnehåll till spelarens symbol ("X" eller "O").
+Ändra därefter oGameData.currentPlayer till den andra spelaren, och uppdatera texten i jumbotronen till den nya spelarens namn.*/
 
+function changePlayer() {
+    
+    console.log(`Jag är slutet på changePlayer()`);
 }
 
 function timer() {
@@ -245,5 +272,12 @@ function timer() {
 }
 
 function gameOver() {
+/* Denna funktion tar emot resultatet för spelet (1 om spelare 1 vunnit, 2 och spelare 2 vunnit, eller 3 om spelet slutat oavgjort)
 
+Ta bort klicklyssnaren på tabellen
+Ta bort klassen "d-none" på formuläret
+Lägg till klassen "d-none" på spelplanen
+Kontrollera vilken spelare som vunnit
+Skriv ut ett vinnarmeddelande i jumbotronen, följa av "Spela igen?".
+Anropa funktionen "initGlobalObject()".*/ 
 }
