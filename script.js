@@ -227,6 +227,7 @@ function initiateGame() {
 }
     console.log(`Jag är slutet av initiateGame().`);
 }
+
 function executeMove (clickedCell) {
 
     console.log(`Jag är slutet av executeMove().`);
