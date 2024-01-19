@@ -126,8 +126,6 @@ function checkWinner(playerIn) {
         return isWinner;
     }
 
-
-
 //Kontrollera om alla platser i oGameData.GameField är fyllda. Om sant returnera true, annars false.
 function checkForDraw() {
     let isDraw = ``;
@@ -184,7 +182,8 @@ function initiateGame() {
 
     const tdRef = Array.from(document.querySelectorAll(`td`)); // Om man inte gör en "Array.from" så kan vi inte använda array metoder då querySelectorAll sparar allt i en node. 
     for (let i = 0; i < tdRef.length; i++) {
-        tdRef[i] = "";
+        tdRef[i].textContent = " "; // Tar bort alla X och O.
+        tdRef[i].style.backgroundColor = `#FFF`; // Återställer cellerna till vitt.
     }
 
     // Deklarera de lokala variablerna "playerChar" och "playerName".
@@ -202,10 +201,12 @@ function initiateGame() {
     if (randomNumber < 0.5) {
         playerChar = oGameData.playerOne;
         playerName = oGameData.nickNamePlayerOne
+        oGameData.currentPlayer = oGameData.playerOne
     }
     else {
         playerChar =oGameData.playerTwo;
         playerName = oGameData.nickNamePlayerTwo
+        oGameData.currentPlayer = oGameData.playerTwo
     }
 
     // Ändra texten i h1-elementet som ligger i div-elementet med klassen "jumbotron" till "Aktuell spelare är XXX", 
@@ -219,10 +220,13 @@ function initiateGame() {
     let tableRef = Array.from(document.querySelectorAll(`.ml-auto td`)); // Samlar alla td element som ligger i .ml-auto i en array.
 
     for (let i = 0; i < tableRef.length; i++) { // loopar igenom tableRef och lägger till en eventlyssnare på alla element i arrayen.
-    tableRef[i].addEventListener(`click`, function () { 
-        executeMove(tableRef[i]) }); // för att veta vilken av td elementen vi clickade på skickar vi med tableRef[i] till executeMove()
+    tableRef[i].addEventListener(`click`,clicker); // för att veta vilken av td elementen vi clickade på skickar vi med tableRef[i] till executeMove()
 }
     console.log(`Jag är slutet av initiateGame().`);
+}
+// Skapar ny funktion med global scope så att den kan läsas av både initiateGame() och gameOver()
+function clicker(event) { 
+    executeMove(event.currentTarget)
 }
 
 function executeMove (clickedCell) { // Vi tar emot tableRef[i] och sparar den i parametern clickedCell.
@@ -232,11 +236,19 @@ function executeMove (clickedCell) { // Vi tar emot tableRef[i] och sparar den i
     if (clickedCell.textContent === " ") { // Kollar så att platsen är tom genom att kolla att det inte är skrivet något mellan taggarna i vår html.
              
         oGameData.gameField[dataIdRef] = oGameData.currentPlayer; // Värdet av data-id är en siffra och vi hämtar den siffran för att ange plats på vårt spelfält. Vi sätter platsen till currentplayer (X eller O)
+        
+        if (oGameData.currentPlayer === oGameData.playerOne) {
+            clickedCell.style.backgroundColor = oGameData.colorPlayerOne;
+        }
+        else if (oGameData.currentPlayer === oGameData.playerTwo) {
+            clickedCell.style.backgroundColor = oGameData.colorPlayerTwo;
+        }
         clickedCell.textContent = oGameData.currentPlayer // Fyller i antingen X eller O inom elementets taggar i html dokumentet.
+
         console.log(oGameData.gameField);
         if (checkForGameOver() === 0) { // Om funktionen checkForGameOver returnerar 0 så betyder det att spelet inte är avgjort och vi byter spelare.
-            console.log(`The show goes on...`)
             changePlayer();
+            console.log(`The show goes on...`)
         }
         else if (checkForGameOver() === 1){ // Om funktionen returnerar 1 så betyder det att spelare 1 vann och vi skickar den informationen till funktionen gameOver
             console.log(`X vann.`)
@@ -263,21 +275,62 @@ Sätt även cellens textinnehåll till spelarens symbol ("X" eller "O").
 Ändra därefter oGameData.currentPlayer till den andra spelaren, och uppdatera texten i jumbotronen till den nya spelarens namn.*/
 
 function changePlayer() {
+
+    let jumbotron = document.querySelector(`.jumbotron h1`);
+
+    if (oGameData.currentPlayer === oGameData.playerOne) {
+        oGameData.currentPlayer = oGameData.playerTwo;
+        jumbotron.textContent = `Dags för ${oGameData.nickNamePlayerTwo} att göra sitt drag`;
+
+    }
+    else if (oGameData.currentPlayer === oGameData.playerTwo) {
+        oGameData.currentPlayer = oGameData.playerOne;
+        jumbotron.textContent = `Dags för ${oGameData.nickNamePlayerOne} att göra sitt drag`;
+    }
     
-    console.log(`Jag är slutet på changePlayer()`);
 }
 
 function timer() {
 
 }
 
-function gameOver() {
+function gameOver(gamesDone) {
 /* Denna funktion tar emot resultatet för spelet (1 om spelare 1 vunnit, 2 och spelare 2 vunnit, eller 3 om spelet slutat oavgjort)
+Ta bort klicklyssnaren på tabellen DONE
+Ta bort klassen "d-none" på formuläret DONE
+Lägg till klassen "d-none" på spelplanen DONE
+Kontrollera vilken spelare som vunnit DONE
+Skriv ut ett vinnarmeddelande i jumbotronen, följa av "Spela igen?". DONE
+Anropa funktionen "initGlobalObject()".*/
 
-Ta bort klicklyssnaren på tabellen
-Ta bort klassen "d-none" på formuläret
-Lägg till klassen "d-none" på spelplanen
-Kontrollera vilken spelare som vunnit
-Skriv ut ett vinnarmeddelande i jumbotronen, följa av "Spela igen?".
-Anropa funktionen "initGlobalObject()".*/ 
+if (gamesDone !== 0) {
+    console.log(`GamesDone`)
+ 
+    let tableRef = Array.from(document.querySelectorAll(`.ml-auto td`)); // Samlar alla td element som ligger i .ml-auto i en array.
+    
+    for (let i = 0; i < tableRef.length; i++) { // loopar igenom tableRef och BORT en eventlyssnare på alla element i arrayen.
+    tableRef[i].removeEventListener(`click`,clicker); // för att veta vilken av td elementen vi clickade på skickar vi med tableRef[i] till executeMove()
+    }
+    
+    const playerFormRef = document.querySelector(`#theForm`);
+    playerFormRef.classList.remove(`d-none`);
+
+    const boardRef = document.querySelector(`#gameArea`);
+    boardRef.classList.add(`d-none`);
+    let jumbotron = document.querySelector(`.jumbotron h1`);
+    if (gamesDone === 1) {
+        jumbotron.textContent = `${oGameData.nickNamePlayerOne} vann! Vill ni spela igen?`;
+        console.log(`Brumman`);
+    }
+    else if (gamesDone === 2) {
+        jumbotron.textContent = `${oGameData.nickNamePlayerTwo} vann! Vill ni spela igen?`;
+        console.log(`Trumman`);
+    }
+    else if (gamesDone === 3) {
+        jumbotron.textContent = `Ingen lyckades vinna. Vill ni spela igen?`;
+        console.log(`Krumman`);
+    }    
+    initGlobalObject()     
+}
+
 }
